@@ -169,6 +169,12 @@ variable "log_publishing_application_enabled" {
   description = "Specifies whether log publishing option for ES_APPLICATION_LOGS is enabled or not"
 }
 
+variable "log_publishing_audit_enabled" {
+  type        = bool
+  default     = false
+  description = "Specifies whether log publishing option for AUDIT_LOGS is enabled or not"
+}
+
 variable "log_publishing_index_cloudwatch_log_group_arn" {
   type        = string
   default     = ""
@@ -238,7 +244,7 @@ variable "node_to_node_encryption_enabled" {
 variable "cognito_enabled" {
   type        = bool
   default     = false
-  description =  "whether to enable cognito authentication"
+  description = "whether to enable cognito authentication"
 }
 
 variable "cognito_identity_pool_id" {
@@ -310,4 +316,22 @@ variable "master_user_password" {
   type        = string
   description = "The master user's password, which is stored in the Amazon Elasticsearch Service domain's internal database. Only specify if internal_user_database_enabled is set to true"
   default     = ""
+}
+
+variable "warm_enabled" {
+  type        = bool
+  description = "Whether to enable warm storage."
+  default     = false
+}
+
+variable "warm_count" {
+  type        = number
+  description = "Number of warm nodes in the cluster. Valid values are between 2 and 150"
+  default     = 2
+}
+
+variable "warm_type" {
+  type        = string
+  description = "Valid values are ultrawarm1.medium.elasticsearch, ultrawarm1.large.elasticsearch and ultrawarm1.xlarge.elasticsearch. warm_type"
+  default     = "ultrawarm1.medium.elasticsearch"
 }

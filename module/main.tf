@@ -1,5 +1,5 @@
 module "label" {
-  source     = "git::https://github.com/HarshadRanganathan/terraform-aws-module-null-label.git//module?ref=1.0.0"
+  source     = "git::https://github.com/HarshadRanganathan/terraform-aws-module-null-label.git//module?ref=2.0.0"
   enabled    = var.enabled
   namespace  = var.namespace
   name       = var.name
@@ -10,7 +10,7 @@ module "label" {
 }
 
 module "user_label" {
-  source     = "git::https://github.com/HarshadRanganathan/terraform-aws-module-null-label.git//module?ref=1.0.0"
+  source     = "git::https://github.com/HarshadRanganathan/terraform-aws-module-null-label.git//module?ref=2.0.0"
   enabled    = var.enabled
   namespace  = var.namespace
   name       = var.name
@@ -66,7 +66,7 @@ resource "aws_elasticsearch_domain" "default" {
   domain_name           = module.label.id
   elasticsearch_version = var.elasticsearch_version
 
-  advanced_options      = var.advanced_options
+  advanced_options = var.advanced_options
 
   advanced_security_options {
     enabled                        = var.enable_advanced_security_options
@@ -92,11 +92,11 @@ resource "aws_elasticsearch_domain" "default" {
   }
 
   domain_endpoint_options {
-    enforce_https       = var.enforce_https
-    tls_security_policy = var.tls_security_policy
+    enforce_https                   = var.enforce_https
+    tls_security_policy             = var.tls_security_policy
     custom_endpoint_certificate_arn = var.custom_endpoint_certificate_arn
-    custom_endpoint_enabled = var.custom_endpoint_enabled
-    custom_endpoint = var.custom_endpoint
+    custom_endpoint_enabled         = var.custom_endpoint_enabled
+    custom_endpoint                 = var.custom_endpoint
   }
   encrypt_at_rest {
     enabled    = var.encrypt_at_rest_enabled
@@ -114,6 +114,11 @@ resource "aws_elasticsearch_domain" "default" {
     zone_awareness_config {
       availability_zone_count = var.availability_zone_count
     }
+
+    warm_enabled = var.warm_enabled
+    warm_count   = var.warm_enabled ? var.warm_count : null
+    warm_type    = var.warm_enabled ? var.warm_type : null
+
   }
 
   node_to_node_encryption {
@@ -147,6 +152,11 @@ resource "aws_elasticsearch_domain" "default" {
     cloudwatch_log_group_arn = var.log_publishing_application_cloudwatch_log_group_arn
   }
 
+  log_publishing_options {
+    enabled                  = var.log_publishing_audit_enabled
+    log_type                 = "AUDIT_LOGS"
+    cloudwatch_log_group_arn = var.log_publishing_application_cloudwatch_log_group_arn
+  }
   tags = module.label.tags
 }
 
@@ -175,7 +185,7 @@ resource "aws_elasticsearch_domain_policy" "default" {
 }
 
 module "domain_hostname" {
-  source  = "git::https://github.com/HarshadRanganathan/terraform-aws-module-route53-cluster-hostname.git//module?ref=1.0.0"
+  source  = "git::https://github.com/HarshadRanganathan/terraform-aws-module-route53-cluster-hostname.git//module?ref=2.0.0"
   enabled = var.enabled && var.dns_zone_id != "" ? true : false
   name    = var.es_subdomain_name
   ttl     = 60
@@ -184,7 +194,7 @@ module "domain_hostname" {
 }
 
 module "kibana_hostname" {
-  source  = "git::https://github.com/HarshadRanganathan/terraform-aws-module-route53-cluster-hostname.git//module?ref=1.0.0"
+  source  = "git::https://github.com/HarshadRanganathan/terraform-aws-module-route53-cluster-hostname.git//module?ref=2.0.0"
   enabled = var.enabled && var.dns_zone_id != "" ? true : false
   name    = var.kibana_subdomain_name
   ttl     = 60
